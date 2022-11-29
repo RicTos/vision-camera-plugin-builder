@@ -208,14 +208,10 @@ export async function androidCommandHandler(argv: Arguments<unknown>) {
   const packageName = packageNameMatchArray[1] as string;
   const packageElements = packageName.split('.');
 
-  let sourceDir = path.join(manifestPath.replace('/AndroidManifest.xml', ''), 'java', ...packageElements);
+  let sourceDir = path.join(manifestPath.replace('AndroidManifest.xml', ''), lang === 'Kotlin' ? 'kotlin': 'java', ...packageElements);
   if (!fs.existsSync(sourceDir)) {
-    // Handle project with kotlin source set
-    sourceDir = path.join(manifestPath.replace('/AndroidManifest.xml', ''), 'kotlin', ...packageElements);
-    if (!fs.existsSync(sourceDir)) {
-      console.error(kleur.red(`\nCannot find main source set at ${sourceDir}\n`));
-      return;
-    }
+    console.error(kleur.red(`\nCannot find main source set at ${sourceDir}\n`));
+    return;
   }
 
   fs.mkdirSync(path.join(sourceDir, pluginName.toLowerCase()));
